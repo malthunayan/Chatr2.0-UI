@@ -172,6 +172,7 @@ body.fixed-nav {
     position: absolute;
     top: 0;
     left: 0;
+    overflow-y: auto;
     -webkit-flex-direction: column;
     -ms-flex-direction: column;
     flex-direction: column;

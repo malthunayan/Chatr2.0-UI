@@ -4,6 +4,7 @@ import jwt_decode from "jwt-decode";
 import { SET_CURRENT_USER } from "./actionTypes";
 
 import { setErrors } from "./errors";
+import { fetchAllChannels } from "./channels";
 
 // const instance = axios.create({
 //   baseURL: "https://api-chatr.herokuapp.com/"
@@ -42,19 +43,23 @@ export const authorization = (userData, type, history) => {
 export const logout = () => setCurrentUser();
 
 const setCurrentUser = token => {
-  let user;
-  if (token) {
-    localStorage.setItem("token", token);
-    axios.defaults.headers.common.Authorization = `jwt ${token}`;
-    user = jwt_decode(token);
-  } else {
-    localStorage.removeItem("token");
-    delete axios.defaults.headers.common.Authorization;
-    user = null;
-  }
+  return async dispatch => {
+    let user;
+    if (token) {
+      localStorage.setItem("token", token);
+      axios.defaults.headers.common.Authorization = `jwt ${token}`;
+      user = jwt_decode(token);
+      dispatch(fetchAllChannels(true));
+    } else {
+      localStorage.removeItem("token");
+      delete axios.defaults.headers.common.Authorization;
+      user = null;
+      dispatch(fetchAllChannels(false));
+    }
 
-  return {
-    type: SET_CURRENT_USER,
-    payload: user
+    dispatch({
+      type: SET_CURRENT_USER,
+      payload: user
+    });
   };
 };
