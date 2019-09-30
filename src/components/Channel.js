@@ -10,6 +10,14 @@ class Channel extends React.Component {
     const channelID = this.props.match.params.channelID;
     this.props.fetchChannel(channelID);
   }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.channel !== prevProps.channel) {
+      const channelID = this.props.match.params.channelID;
+      this.props.fetchChannel(channelID);
+    }
+  }
+
   render() {
     const channel = this.props.channel;
     if (!!channel) {

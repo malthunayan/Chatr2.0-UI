@@ -5,11 +5,9 @@ const Messages = props => {
     <div className="card">
       <h5 className="card-header">
         {props.messageObject.username}
-        <span className="text-right">
-          <small className="text-right text-muted">
-            {props.messageObject.timestamp}
-          </small>
-        </span>
+        <small className="float-right text-muted">
+          {props.messageObject.timestamp}
+        </small>
       </h5>
       <div className="card-body">
         <p className="card-text">{props.messageObject.message}</p>

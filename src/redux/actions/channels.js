@@ -28,7 +28,7 @@ export const fetchChannel = channelID => {
   return async dispatch => {
     try {
       const res = await axios.get(
-        `https://api-chatr.herokuapp.com/channels/${channelID}`
+        `https://api-chatr.herokuapp.com/channels/${channelID}/`
       );
       const channel = res.data;
       dispatch({
