@@ -32,8 +32,9 @@ export const authorization = (userData, type, history) => {
       const user = res.data;
       dispatch(setCurrentUser(user.token));
       history.replace("/");
-    } catch (err) {
-      console.error(err);
+    } catch (errors) {
+      // console.error(errors.response.data.non_field_errors[0]);
+      dispatch(setErrors(errors));
     }
   };
 };

@@ -52,6 +52,11 @@ class RegistationForm extends Component {
                 onChange={this.changeHandler}
               />
             </div>
+            {this.props.errors && (
+              <p style={{ color: "red" }}>
+                {this.props.errors.data.non_field_errors[0]}
+              </p>
+            )}
             <input
               className="btn btn-primary"
               type="submit"
@@ -76,7 +81,8 @@ class RegistationForm extends Component {
 
 const mapStateToProps = state => {
   return {
-    user: state.user
+    user: state.user,
+    errors: state.errors.response
   };
 };
 
