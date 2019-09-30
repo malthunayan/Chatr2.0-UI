@@ -1,7 +1,7 @@
 import { FETCH_CHANNELS } from "../actions/actionTypes";
 
 const initialState = {
-  channels: []
+  allChannels: []
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -10,7 +10,7 @@ const reducer = (state = initialState, { type, payload }) => {
       const newChannels = payload;
       return {
         ...state,
-        channels: newChannels
+        allChannels: newChannels
       };
     default:
       return state;

@@ -12,7 +12,7 @@ const NavBar = () => {
       id="mainNav"
     >
       <Link className="navbar-brand" to="/welcome">
-        Chatr2.0
+        Chatr 2.0
       </Link>
       <button
         className="navbar-toggler navbar-toggler-right"
