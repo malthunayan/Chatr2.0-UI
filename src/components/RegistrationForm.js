@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { authorization } from "../redux/actions/authentication";
+import { setErrors } from "../redux/actions";
 
 class RegistationForm extends Component {
   state = {
@@ -22,9 +23,35 @@ class RegistationForm extends Component {
     );
   };
 
+  errorHandler = () => {
+    if (this.props.errors && this.props.match.url.substring(1) === "login") {
+      return (
+        <p style={{ color: "red" }}>
+          {this.props.errors.data.non_field_errors[0]}
+        </p>
+      );
+    } else if (
+      this.props.errors &&
+      this.props.match.url.substring(1) === "signup"
+    ) {
+      return (
+        <p style={{ color: "red" }}>{this.props.errors.data.username[0]}</p>
+      );
+    }
+  };
+
   render() {
     if (this.props.user) return <Redirect to="/" />;
     const type = this.props.match.url.substring(1);
+    // if (!!this.props.errors) {
+    //   return {specificErrors =
+    //     type === "login"
+    //       ? this.props.errors.non_field_errors[0]
+    //       : this.props.errors.username[0]
+    //   }
+    // } else {
+    //   const specificErrors = null;
+    // }
     return (
       <div className="card col-6 mx-auto p-0 mt-5">
         <div className="card-body">
@@ -36,7 +63,9 @@ class RegistationForm extends Component {
           <form onSubmit={this.submitHandler}>
             <div className="form-group">
               <input
-                className="form-control"
+                className={
+                  this.props.errors ? "form-control is-invalid" : "form-control"
+                }
                 type="text"
                 placeholder="Username"
                 name="username"
@@ -45,18 +74,16 @@ class RegistationForm extends Component {
             </div>
             <div className="form-group">
               <input
-                className="form-control"
+                className={
+                  this.props.errors ? "form-control is-invalid" : "form-control"
+                }
                 type="password"
                 placeholder="Password"
                 name="password"
                 onChange={this.changeHandler}
               />
             </div>
-            {this.props.errors && (
-              <p style={{ color: "red" }}>
-                {this.props.errors.data.non_field_errors[0]}
-              </p>
-            )}
+            {this.errorHandler()}
             <input
               className="btn btn-primary"
               type="submit"
@@ -68,6 +95,7 @@ class RegistationForm extends Component {
           <Link
             to={type === "login" ? "/signup" : "/login"}
             className="btn btn-small btn-link"
+            onClick={() => this.props.resetErrors({})}
           >
             {type === "login"
               ? "register an account"
@@ -89,7 +117,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     authorization: (userData, type, history) =>
-      dispatch(authorization(userData, type, history))
+      dispatch(authorization(userData, type, history)),
+    resetErrors: errors => dispatch(setErrors(errors))
   };
 };
 

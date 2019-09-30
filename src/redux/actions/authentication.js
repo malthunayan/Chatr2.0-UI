@@ -33,7 +33,7 @@ export const authorization = (userData, type, history) => {
       dispatch(setCurrentUser(user.token));
       history.replace("/");
     } catch (errors) {
-      // console.error(errors.response.data.non_field_errors[0]);
+      console.error(errors.response.data);
       dispatch(setErrors(errors));
     }
   };
