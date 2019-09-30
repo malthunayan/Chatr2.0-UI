@@ -1,3 +1,3 @@
-export { login, logout, signup, checkForExpiredToken } from "./authentication";
+export { logout, authorization, checkForExpiredToken } from "./authentication";
 
 export { setErrors } from "./errors";
