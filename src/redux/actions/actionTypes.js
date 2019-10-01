@@ -2,3 +2,6 @@ export const SET_CURRENT_USER = "SET_CURRENT_USER";
 export const SET_ERRORS = "SET_ERRORS";
 export const FETCH_CHANNELS = "FETCH_CHANNELS";
 export const FETCH_CHANNEL = "FETCH_CHANNEL";
+export const SET_LOADING = "SET_LOADING";
+export const CREATE_NEW_CHANNEL = "CREATE_NEW_CHANNEL";
+export const SEND_MESSAGE = "SEND_MESSAGE";

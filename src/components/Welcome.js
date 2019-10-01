@@ -3,7 +3,7 @@ import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
 function Welcome(props) {
-  if (props.user) return <Redirect to="/private" />;
+  if (props.user) return <Redirect to="/channels/385/" />;
   return (
     <header className="masthead d-flex">
       <div className="container text-center my-auto z-1">

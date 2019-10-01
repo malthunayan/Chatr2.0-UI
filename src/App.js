@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
 
 // Scripts
 import main from "./assets/js/main";
@@ -18,6 +19,13 @@ class App extends Component {
   }
 
   render() {
+    // if (this.props.loading) {
+    //   return (
+    //     <div>
+    //       <h1>Loading</h1>
+    //     </div>
+    //   );
+    // } else {
     return (
       <div className="content-wrapper">
         <NavBar />
@@ -32,6 +40,11 @@ class App extends Component {
       </div>
     );
   }
+  // }
 }
 
-export default App;
+const mapStateToProps = state => ({
+  loading: state.channel.loading
+});
+
+export default connect(mapStateToProps)(App);
