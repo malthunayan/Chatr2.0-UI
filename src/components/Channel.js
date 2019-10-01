@@ -35,6 +35,14 @@ class Channel extends React.Component {
     if (channelID !== prevProps.match.params.channelID) {
       this.props.fetchChannel(channelID);
     }
+    if (this.props.channel !== prevProps.channel) {
+      const chat = document.getElementById("chat");
+      chat.scrollIntoView(false);
+    }
+
+    // setTimeout(() => {
+    //   this.props.fetchChannel(channelID);
+    // }, 5000000000);
   }
 
   render() {
@@ -53,22 +61,17 @@ class Channel extends React.Component {
           messageObject={messageObject}
         />
       ));
-      // let scroller = document.getElementById("scroller");
-      // if (scroller) {
-      //   scroller.scrollIntoView(false);
-      // }
       let channelName = "";
       if (this.props.allChannels.length > 0) {
         channelName = this.props.allChannels.find(
           channel => channel.id === +this.props.match.params.channelID
         ).name;
       }
-      // console.log(scroller);
       return (
-        <div>
+        <div id="chat">
           {messages}
           <form name="messageForm" onSubmit={this.submitHandler}>
-            <div className="row" id="scroller">
+            <div className="row">
               <div className="col-10" style={{ paddingRight: 0 }}>
                 <textarea
                   style={{ height: "100%", width: "100%", resize: "none" }}
@@ -92,6 +95,36 @@ class Channel extends React.Component {
     }
   }
 }
+
+// const out = document.getElementById("out");
+// let c = 0;
+
+// setInterval(function() {
+//   // allow 1px inaccuracy by adding 1
+//   const isScrolledToBottom =
+//     out.scrollHeight - out.clientHeight <= out.scrollTop + 1;
+
+//   const newElement = document.createElement("div");
+
+//   newElement.textContent = format(
+//     c++,
+//     "Bottom position:",
+//     out.scrollHeight - out.clientHeight,
+//     "Scroll position:",
+//     out.scrollTop
+//   );
+
+//   out.appendChild(newElement);
+
+//   // scroll to bottom if isScrolledToBottom is true
+//   if (isScrolledToBottom) {
+//     out.scrollTop = out.scrollHeight - out.clientHeight;
+//   }
+// }, 500);
+
+// function format() {
+//   return Array.prototype.slice.call(arguments).join(" ");
+// }
 
 const mapStateToProps = state => ({
   user: state.user,
