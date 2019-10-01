@@ -3,7 +3,8 @@ import {
   FETCH_CHANNEL,
   SET_LOADING,
   CREATE_NEW_CHANNEL,
-  SEND_MESSAGE
+  SEND_MESSAGE,
+  FETCH_NEW_MESSAGES
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -23,7 +24,7 @@ const reducer = (state = initialState, { type, payload }) => {
     case FETCH_CHANNEL:
       return {
         ...state,
-        currentChannel: payload,
+        currentChannel: state.currentChannel.concat(payload),
         loading: false
       };
     case CREATE_NEW_CHANNEL:
@@ -32,6 +33,11 @@ const reducer = (state = initialState, { type, payload }) => {
         allChannels: state.allChannels.concat(payload)
       };
     case SEND_MESSAGE:
+      return {
+        ...state,
+        currentChannel: state.currentChannel.concat(payload)
+      };
+    case FETCH_NEW_MESSAGES:
       return {
         ...state,
         currentChannel: state.currentChannel.concat(payload)

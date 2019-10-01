@@ -38,11 +38,12 @@ class Channel extends React.Component {
     if (this.props.channel !== prevProps.channel) {
       const chat = document.getElementById("chat");
       chat.scrollIntoView(false);
+      // const timestamp = this.props.channel[this.props.channel.length - 1]
+      //   .timestamp;
+      // setTimeout(() => {
+      //   this.props.fetchNewMessages(channelID, timestamp);
+      // }, 5000);
     }
-
-    // setTimeout(() => {
-    //   this.props.fetchChannel(channelID);
-    // }, 5000000000);
   }
 
   render() {
@@ -138,6 +139,8 @@ const mapDispatchToProps = dispatch => {
     fetchChannel: channelID => dispatch(fetchChannel(channelID)),
     sendMessage: (channelID, message, user) =>
       dispatch(sendMessage(channelID, message, user))
+    // fetchNewMessages: (channelID, timestamp) =>
+    // dispatch(fetchNewMessages(channelID, timestamp))
   };
 };
 
