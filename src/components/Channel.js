@@ -32,10 +32,8 @@ class Channel extends React.Component {
     );
     if (!channelAvailable) {
       this.props.fetchChannel(channelID, []);
-      console.log("TCL: componentDidMount -> channel not available");
     } else {
       this.props.fetchChannel(channelID, channelAvailable.messages);
-      console.log("TCL: componentDidMount -> channel available");
     }
   }
 
@@ -47,10 +45,8 @@ class Channel extends React.Component {
       );
       if (!channelAvailable) {
         this.props.fetchChannel(channelID, []);
-        console.log("TCL: componentDidUpdate -> channel not available");
       } else {
         this.props.fetchChannel(channelID, channelAvailable.messages);
-        console.log("TCL: componentDidUpdate -> channel available");
       }
     }
     // if (this.props.channel !== prevProps.channel) {
