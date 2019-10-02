@@ -27,26 +27,46 @@ class Channel extends React.Component {
 
   componentDidMount() {
     const channelID = this.props.match.params.channelID;
-    this.props.fetchChannel(channelID);
+    const channelAvailable = this.props.fetchedChannels.find(
+      channel => parseInt(channel.id) === parseInt(channelID)
+    );
+    if (!channelAvailable) {
+      this.props.fetchChannel(channelID, []);
+      console.log("TCL: componentDidMount -> channel not available");
+    } else {
+      this.props.fetchChannel(channelID, channelAvailable.messages);
+      console.log("TCL: componentDidMount -> channel available");
+    }
   }
 
   componentDidUpdate(prevProps) {
     const channelID = this.props.match.params.channelID;
     if (channelID !== prevProps.match.params.channelID) {
-      this.props.fetchChannel(channelID);
+      const channelAvailable = this.props.fetchedChannels.find(
+        channel => parseInt(channel.id) === parseInt(channelID)
+      );
+      if (!channelAvailable) {
+        this.props.fetchChannel(channelID, []);
+        console.log("TCL: componentDidUpdate -> channel not available");
+      } else {
+        this.props.fetchChannel(channelID, channelAvailable.messages);
+        console.log("TCL: componentDidUpdate -> channel available");
+      }
     }
-    if (this.props.channel !== prevProps.channel) {
-      const chat = document.getElementById("chat");
-      chat.scrollIntoView(false);
-      // const timestamp = this.props.channel[this.props.channel.length - 1]
-      //   .timestamp;
-      // setTimeout(() => {
-      //   this.props.fetchNewMessages(channelID, timestamp);
-      // }, 5000);
-    }
+    // if (this.props.channel !== prevProps.channel) {
+    //   const chat = document.getElementById("chat");
+    //   chat.scrollIntoView(false);
+    //  // const timestamp = this.props.channel[this.props.channel.length - 1]
+    //  //   .timestamp;
+    //  // setTimeout(() => {
+    //  //   this.props.fetchNewMessages(channelID, timestamp);
+    //  // }, 5000);
+    // }
   }
 
   render() {
+    let messages;
+    let channel;
     if (!this.props.user) return <Redirect to="/login" />;
     if (this.props.loading) {
       return (
@@ -55,19 +75,29 @@ class Channel extends React.Component {
         </div>
       );
     } else {
-      const channel = this.props.channel;
-      const messages = channel.map(messageObject => (
-        <Messages
-          key={`${messageObject.message} ${messageObject.id} ${messageObject.timestamp}`}
-          messageObject={messageObject}
-        />
-      ));
-      let channelName = "";
-      if (this.props.allChannels.length > 0) {
-        channelName = this.props.allChannels.find(
-          channel => channel.id === +this.props.match.params.channelID
-        ).name;
+      const channelID = this.props.match.params.channelID;
+      if (this.props.fetchedChannels.length > 0) {
+        channel = this.props.fetchedChannels.find(
+          channel => parseInt(channel.id) === parseInt(channelID)
+        );
+        if (channel) {
+          messages = channel.messages.map((messageObject, index) => (
+            <Messages key={index} messageObject={messageObject} />
+          ));
+          // } else {
+          //   messages = this.props.fetchedChannels[0].map(
+          //     (messageObject, index) => (
+          //       <Messages key={index} messageObject={messageObject.messages} />
+          //     )
+          //   );
+        }
       }
+      // let channelName = "";
+      // if (this.props.allChannels.length > 0) {
+      const channelName = this.props.allChannels.find(
+        channel => channel.id === +channelID
+      ).name;
+      // }
       return (
         <div id="chat">
           {messages}
@@ -129,14 +159,15 @@ class Channel extends React.Component {
 
 const mapStateToProps = state => ({
   user: state.user,
-  channel: state.channel.currentChannel,
+  fetchedChannels: state.channel.loadedChannels,
   allChannels: state.channel.allChannels,
   loading: state.channel.loading
 });
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchChannel: channelID => dispatch(fetchChannel(channelID)),
+    fetchChannel: (channelID, messages) =>
+      dispatch(fetchChannel(channelID, messages)),
     sendMessage: (channelID, message, user) =>
       dispatch(sendMessage(channelID, message, user))
     // fetchNewMessages: (channelID, timestamp) =>

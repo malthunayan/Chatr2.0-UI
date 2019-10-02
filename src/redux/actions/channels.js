@@ -1,10 +1,10 @@
 import axios from "axios";
 import {
   FETCH_CHANNELS,
-  FETCH_CHANNEL,
+  FETCH_MESSAGES,
   SET_LOADING,
-  CREATE_NEW_CHANNEL
-  // SEND_MESSAGE
+  CREATE_NEW_CHANNEL,
+  SEND_MESSAGE
   // FETCH_NEW_MESSAGES
 } from "./actionTypes";
 // import { setErrors } from "./errors";
@@ -36,25 +36,31 @@ export const fetchAllChannels = fetch => {
 
 let interval;
 
-export const fetchChannel = channelID => {
+export const fetchChannel = (channelID, messages) => {
   return async dispatch => {
-    dispatch({
-      type: SET_LOADING
-    });
-    let timestamp = "";
+    if (messages.length === 0) {
+      dispatch({
+        type: SET_LOADING
+      });
+    }
     clearInterval(interval);
     interval = setInterval(async () => {
+      const lastMessage = messages[messages.length - 1];
+      const timestamp = lastMessage ? lastMessage.timestamp : "";
       try {
         const res = await axios.get(
           `https://api-chatr.herokuapp.com/channels/${channelID}/?latest=${timestamp}`
         );
-        const channel = res.data;
+        const messages = res.data;
+        // timestamp =
+        let channelObject = {
+          id: channelID,
+          messages: messages
+        };
         dispatch({
-          type: FETCH_CHANNEL,
-          payload: channel
+          type: FETCH_MESSAGES,
+          payload: channelObject
         });
-        timestamp = channel[channel.length - 1].timestamp;
-        console.log(timestamp);
       } catch (error) {
         console.error(error);
         // dispatch(setErrors(error));
@@ -86,22 +92,21 @@ export const createNewChannel = channelName => {
 export const sendMessage = (channelID, message, user) => {
   return async dispatch => {
     try {
-      // const res =
-      await axios.post(
+      const res = await axios.post(
         `https://api-chatr.herokuapp.com/channels/${channelID}/send/`,
         message
       );
-      // const messageObject = {
-      //   id: user.user_id,
-      //   username: user.username,
-      //   message: res.data.message,
-      //   timestamp: new Date(),
-      //   channel: channelID
-      // };
-      // dispatch({
-      //   type: SEND_MESSAGE,
-      //   payload: messageObject
-      // });
+      const messageObject = {
+        id: user.user_id,
+        username: user.username,
+        message: res.data.message,
+        timestamp: new Date(),
+        channel: channelID
+      };
+      dispatch({
+        type: SEND_MESSAGE,
+        payload: messageObject
+      });
     } catch (error) {
       console.error(error);
       // dispatch(setErrors(error));
