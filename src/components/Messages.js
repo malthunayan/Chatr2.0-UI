@@ -33,6 +33,12 @@ const Messages = props => {
   }
   const datestamp = month + ". " + date + ", " + year;
   timestamp = hour + ":" + minute + " " + meridiem;
+
+  const copyText = () => {
+    const copiedText = props.messageObject.message;
+    navigator.clipboard.writeText(copiedText);
+  };
+
   return (
     <div className="card">
       <h5 className="card-header">
@@ -40,6 +46,9 @@ const Messages = props => {
         <small className="float-right">
           {timestamp} | <span className="text-muted">{datestamp}</span>
         </small>
+        <button className="float-right mx-5 btn-sm btn-info" onClick={copyText}>
+          COPY
+        </button>
       </h5>
       <div className="card-body">
         <p className="card-text">{props.messageObject.message}</p>

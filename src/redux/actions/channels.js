@@ -3,8 +3,8 @@ import {
   FETCH_CHANNELS,
   FETCH_MESSAGES,
   SET_LOADING,
-  CREATE_NEW_CHANNEL,
-  SEND_MESSAGE
+  CREATE_NEW_CHANNEL
+  // SEND_MESSAGE
   // FETCH_NEW_MESSAGES
 } from "./actionTypes";
 // import { setErrors } from "./errors";
@@ -34,7 +34,7 @@ export const fetchAllChannels = fetch => {
   };
 };
 
-let interval;
+// let interval;
 
 export const fetchChannel = (channelID, timestamp) => {
   return async dispatch => {
@@ -86,17 +86,18 @@ export const createNewChannel = channelName => {
 export const sendMessage = (channelID, message, user) => {
   return async dispatch => {
     try {
-      const res = await axios.post(
+      // const res =
+      await axios.post(
         `https://api-chatr.herokuapp.com/channels/${channelID}/send/`,
         message
       );
-      const messageObject = {
-        id: user.user_id,
-        username: user.username,
-        message: res.data.message,
-        timestamp: new Date(),
-        channel: channelID
-      };
+      // const messageObject = {
+      //   id: user.user_id,
+      //   username: user.username,
+      //   message: res.data.message,
+      //   timestamp: new Date(),
+      //   channel: channelID
+      // };
       // dispatch({
       //   type: SEND_MESSAGE,
       //   payload: messageObject
