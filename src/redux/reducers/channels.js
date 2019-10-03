@@ -27,11 +27,11 @@ const reducer = (state = initialState, { type, payload }) => {
         channel => channel.id === fetchedMessages.id
       );
       if (oldMessages) {
-        if (oldMessages.length !== fetchedMessages.length) {
-          oldMessages.messages = oldMessages.messages.concat(
-            fetchedMessages.messages
-          );
-        }
+        // if (oldMessages.length !== fetchedMessages.length) {
+        oldMessages.messages = oldMessages.messages.concat(
+          fetchedMessages.messages
+        );
+        // }
       } else {
         channels = channels.concat(fetchedMessages);
       }

@@ -36,19 +36,30 @@ export const fetchAllChannels = fetch => {
 
 let interval;
 
-export const fetchChannel = (channelID, messages) => {
+export const fetchChannel = (channelID, timestamp) => {
   return async dispatch => {
-    if (messages.length === 0) {
+    if (!timestamp) {
       dispatch({
         type: SET_LOADING
       });
     }
-    fetchMessages(dispatch, channelID, messages);
-    clearInterval(interval);
-    interval = setInterval(
-      () => fetchMessages(dispatch, channelID, messages),
-      5000
-    );
+    try {
+      const res = await axios.get(
+        `https://api-chatr.herokuapp.com/channels/${channelID}/?latest=${timestamp}`
+      );
+      const messages = res.data;
+      let channelObject = {
+        id: channelID,
+        messages: messages
+      };
+      dispatch({
+        type: FETCH_MESSAGES,
+        payload: channelObject
+      });
+    } catch (error) {
+      console.error(error);
+      // dispatch(setErrors(error));
+    }
   };
 };
 
@@ -86,10 +97,10 @@ export const sendMessage = (channelID, message, user) => {
         timestamp: new Date(),
         channel: channelID
       };
-      dispatch({
-        type: SEND_MESSAGE,
-        payload: messageObject
-      });
+      // dispatch({
+      //   type: SEND_MESSAGE,
+      //   payload: messageObject
+      // });
     } catch (error) {
       console.error(error);
       // dispatch(setErrors(error));
@@ -115,25 +126,25 @@ export const sendMessage = (channelID, message, user) => {
 //   };
 // };
 
-const fetchMessages = async (dispatch, channelID, messages) => {
-  const lastMessage = messages[messages.length - 1];
-  const timestamp = lastMessage ? lastMessage.timestamp : "";
-  try {
-    const res = await axios.get(
-      `https://api-chatr.herokuapp.com/channels/${channelID}/?latest=${timestamp}`
-    );
-    const messages = res.data;
-    // timestamp =
-    let channelObject = {
-      id: channelID,
-      messages: messages
-    };
-    dispatch({
-      type: FETCH_MESSAGES,
-      payload: channelObject
-    });
-  } catch (error) {
-    console.error(error);
-    // dispatch(setErrors(error));
-  }
-};
+// const fetchMessages = async (dispatch, channelID, messages) => {
+//   const lastMessage = messages[messages.length - 1];
+//   const timestamp = lastMessage ? lastMessage.timestamp : "";
+//   try {
+//     const res = await axios.get(
+//       `https://api-chatr.herokuapp.com/channels/${channelID}/?latest=${timestamp}`
+//     );
+//     const messages = res.data;
+//     // timestamp =
+//     let channelObject = {
+//       id: channelID,
+//       messages: messages
+//     };
+//     dispatch({
+//       type: FETCH_MESSAGES,
+//       payload: channelObject
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     // dispatch(setErrors(error));
+//   }
+// };

@@ -16,6 +16,7 @@ const ChannelNavLink = ({ channel }) => {
       <NavLink className="nav-link" to={`/channels/${channel.id}`}>
         <FontAwesomeIcon icon={faHashtag} />
         <span className="nav-link-text"> {channel.name}</span>
+        {/* <span className="badge text-white">{channel}</span> */}
       </NavLink>
     </li>
   );
