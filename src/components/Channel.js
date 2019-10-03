@@ -26,12 +26,6 @@ class Channel extends React.Component {
     text.value = "";
   };
 
-  // clearInterval(interval);
-  // interval = setInterval(
-  //   () => fetchMessages(dispatch, channelID, messages),
-  //   5000
-  // );
-
   pressHandler = event => {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -48,7 +42,10 @@ class Channel extends React.Component {
   componentDidMount() {
     const channelID = this.props.match.params.channelID;
     clearInterval(this.state.interval);
-    this.props.fetchChannel(channelID, "", []);
+    const channelAvailable = this.props.fetchedChannels.find(
+      channel => parseInt(channel.id) === parseInt(channelID)
+    );
+    this.props.fetchChannel(channelID, !!channelAvailable, "");
     // clearInterval(this.state.interval);
     this.setState({
       interval: setInterval(() => {
@@ -56,16 +53,15 @@ class Channel extends React.Component {
           channel => parseInt(channel.id) === parseInt(channelID)
         );
         if (!channelAvailable) {
-          this.props.fetchChannel(channelID, "", []);
+          this.props.fetchChannel(channelID, false, "");
+        } else if (channelAvailable && channelAvailable.messages.length === 0) {
+          this.props.fetchChannel(channelID, true, "");
         } else {
           let timestamp =
             channelAvailable.messages[channelAvailable.messages.length - 1]
               .timestamp;
-          this.props.fetchChannel(
-            channelID,
-            timestamp,
-            channelAvailable.messages
-          );
+
+          this.props.fetchChannel(channelID, true, timestamp);
         }
       }, 5000)
     });
@@ -75,7 +71,10 @@ class Channel extends React.Component {
     const channelID = this.props.match.params.channelID;
     if (channelID !== prevProps.match.params.channelID) {
       clearInterval(this.state.interval);
-      this.props.fetchChannel(channelID, "", []);
+      const channelAvailable = this.props.fetchedChannels.find(
+        channel => parseInt(channel.id) === parseInt(channelID)
+      );
+      this.props.fetchChannel(channelID, !!channelAvailable, "");
       // clearInterval(this.state.interval);
       this.setState({
         interval: setInterval(() => {
@@ -83,16 +82,17 @@ class Channel extends React.Component {
             channel => parseInt(channel.id) === parseInt(channelID)
           );
           if (!channelAvailable) {
-            this.props.fetchChannel(channelID, "", []);
+            this.props.fetchChannel(channelID, false, "");
+          } else if (
+            channelAvailable &&
+            channelAvailable.messages.length === 0
+          ) {
+            this.props.fetchChannel(channelID, true, "");
           } else {
             let timestamp =
               channelAvailable.messages[channelAvailable.messages.length - 1]
                 .timestamp;
-            this.props.fetchChannel(
-              channelID,
-              timestamp,
-              channelAvailable.messages
-            );
+            this.props.fetchChannel(channelID, true, timestamp);
           }
         }, 5000)
       });
@@ -128,12 +128,6 @@ class Channel extends React.Component {
           messages = channel.messages.map((messageObject, index) => (
             <Messages key={index} messageObject={messageObject} />
           ));
-          // } else {
-          //   messages = this.props.fetchedChannels[0].map(
-          //     (messageObject, index) => (
-          //       <Messages key={index} messageObject={messageObject.messages} />
-          //     )
-          //   );
         }
       }
       let channelName = "";
@@ -211,12 +205,10 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchChannel: (channelID, timestamp, messages) =>
-      dispatch(fetchChannel(channelID, timestamp, messages)),
+    fetchChannel: (channelID, available, timestamp) =>
+      dispatch(fetchChannel(channelID, available, timestamp)),
     sendMessage: (channelID, message, user) =>
       dispatch(sendMessage(channelID, message, user))
-    // fetchNewMessages: (channelID, timestamp) =>
-    // dispatch(fetchNewMessages(channelID, timestamp))
   };
 };
 

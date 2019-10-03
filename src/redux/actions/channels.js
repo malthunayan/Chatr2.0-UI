@@ -36,9 +36,9 @@ export const fetchAllChannels = fetch => {
 
 // let interval;
 
-export const fetchChannel = (channelID, timestamp) => {
+export const fetchChannel = (channelID, available, timestamp) => {
   return async dispatch => {
-    if (!timestamp) {
+    if (!available) {
       dispatch({
         type: SET_LOADING
       });
@@ -63,7 +63,7 @@ export const fetchChannel = (channelID, timestamp) => {
   };
 };
 
-export const createNewChannel = channelName => {
+export const createNewChannel = (channelName, history) => {
   return async dispatch => {
     try {
       const newChannel = { name: channelName };
@@ -76,6 +76,8 @@ export const createNewChannel = channelName => {
         type: CREATE_NEW_CHANNEL,
         payload: channel
       });
+      console.log(history);
+      history.push(`/channels/${channel.id}`);
     } catch (error) {
       console.error(error);
       // dispatch(setErrors(error));
